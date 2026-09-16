@@ -62,3 +62,76 @@ Save the automated test output:
 ```bash
 uv run pytest tests/test_structured_logging.py -v > outputs/test_structured_logging.txt 2>&1
 ```
+
+---
+
+## Task 2 — Tracing
+
+Task 2 implements tracing with LangSmith and propagates a correlation ID across the request.
+
+The traced request contains three main operations:
+
+- Retriever call
+- Tool call
+- Model call
+
+A unique correlation ID is generated for each request using `uuid`.
+
+The same correlation ID is added to the metadata of the retriever, tool, and model calls so that operations belonging to the same request can be identified together.
+
+### LangSmith Tracing
+
+LangSmith tracing is enabled using environment variables.
+
+Secrets are stored in `.env` and are not hardcoded in the source code.
+
+The `@traceable` decorator is used for custom Python functions that should appear in LangSmith traces.
+
+The retriever is traced as:
+
+```python
+@traceable(
+    name="retrieve_documents",
+    run_type="retriever"
+)
+```
+
+The complete request is also wrapped using:
+
+```python
+@traceable(name="observability_request")
+```
+
+LangChain components such as the tool and model receive the correlation ID through `config` metadata.
+
+This allows the same request ID to be associated with the operations performed during the request.
+
+### Run Task 2
+
+```bash
+uv run python -m tracing.tracing
+```
+
+### Automated Tests
+
+Run Tests
+
+```bash
+uv run pytest tests/test_tracing.py -v
+```
+
+### Evidence
+
+Save the Task 2 execution output:
+
+```bash
+uv run python -m tracing.tracing > outputs/tracing.txt 2>&1
+```
+
+Save the automated test output:
+
+```bash
+uv run pytest tests/test_tracing.py -v > outputs/test_tracing.txt 2>&1
+```
+
+The LangSmith trace provides additional evidence showing the traced request and its associated operations.
