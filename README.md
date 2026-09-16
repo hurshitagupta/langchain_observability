@@ -287,3 +287,76 @@ outputs/test_metrics_and_dashboard.txt
 ```
 
 The scrape output provides evidence that the request counter, error counter, and latency histogram are successfully exposed.
+
+---
+
+## Task 5 — Alerting
+
+Task 5 implements threshold-based alerting for latency regressions.
+
+A maximum acceptable latency threshold is defined as:
+
+```python
+LATENCY_THRESHOLD = 2.0
+```
+
+Requests taking more than two seconds are considered a latency regression.
+
+### Alert Check
+
+The `check_latency()` function compares the measured request duration against the configured threshold.
+
+```python
+if duration > LATENCY_THRESHOLD:
+```
+
+If the threshold is exceeded, a warning is generated:
+
+```text
+ALERT: latency regression detected
+```
+
+For healthy latency, an informational log is generated instead.
+
+### Intentional Regression
+
+The assessment requires the system to be intentionally broken to demonstrate that the alert fires.
+
+Two request scenarios are implemented:
+
+- Normal request — approximately `0.5` seconds
+- Intentionally slow request — approximately `3` seconds
+
+Since the alert threshold is `2` seconds, the normal request remains healthy while the intentionally slow request triggers the alert.
+
+### Run Task 5
+
+```bash
+uv run python -m alerting.alerting
+```
+
+## Automated Tests
+
+Task 5 includes automated tests for healthy and regressed latency.
+
+### Run Tests
+
+```bash
+uv run pytest tests/test_alerting.py -v
+```
+
+### Evidence
+
+The alerting output is saved in:
+
+```text
+outputs/alerting.txt
+```
+
+The automated test output is saved in:
+
+```text
+outputs/test_alerting.txt
+```
+
+The evidence demonstrates that a healthy request remains below the configured threshold and that an intentionally introduced latency regression successfully triggers the alert.

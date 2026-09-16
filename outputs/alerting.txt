@@ -1,0 +1,5 @@
+=== NORMAL REQUEST ===
+Latency healthy | latency=0.50s | threshold=2.00s
+
+=== INTENTIONAL REGRESSION ===
+ALERT: latency regression detected | latency=3.00s | threshold=2.00s
