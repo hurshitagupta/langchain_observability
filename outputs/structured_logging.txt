@@ -1,0 +1,5 @@
+HTTP Request: POST https://openrouter.ai/api/v1/chat/completions "HTTP/1.1 200 OK"
+{"request_id": "bd8a4835", "step": "model_call", "duration_ms": 5084.46, "tokens": 160, "outcome": "success"}
+
+Answer:
+Observability is the ability to infer a system’s internal state and behavior solely from its external outputs and metrics.
