@@ -135,3 +135,52 @@ uv run pytest tests/test_tracing.py -v > outputs/test_tracing.txt 2>&1
 ```
 
 The LangSmith trace provides additional evidence showing the traced request and its associated operations.
+
+---
+
+## Task 3 — Redaction
+
+Task 3 implements redaction to prevent sensitive information from reaching application logs.
+
+The implementation currently protects:
+
+- Email addresses
+- API-key-like values beginning with `sk-`
+
+Regular expressions are used to detect sensitive values before the message is logged.
+
+### Run Task 3
+
+```bash
+uv run python -m redaction.redaction
+```
+
+## Automated Tests
+
+Task 3 includes automated checks for redaction and leakage detection.
+
+The success test passes sensitive information through `safe_log()` and verifies that the original email address and API key do not appear in the generated log.
+
+It also verifies that the expected redaction markers are present.
+
+The leakage detection test intentionally provides unredacted sensitive information and verifies that the configured patterns can detect it.
+
+### Run Tests
+
+```bash
+uv run pytest tests/test_redaction.py -v
+```
+
+### Evidence
+
+Save the redaction output:
+
+```bash
+uv run python -m redaction.redaction > outputs/redaction.txt 2>&1
+```
+
+Save the automated test output:
+
+```bash
+uv run pytest tests/test_redaction.py -v > outputs/test_redaction.txt 2>&1
+```
