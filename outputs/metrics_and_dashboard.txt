@@ -1,0 +1,7 @@
+Metrics available at http://localhost:8000/metrics
+Recorded latency: 5.02 seconds
+
+Answer:
+Observability is the ability to infer the internal state and behavior of a system solely from its external outputs and metrics.
+
+Press Enter to stop the metrics server...

@@ -184,3 +184,106 @@ Save the automated test output:
 ```bash
 uv run pytest tests/test_redaction.py -v > outputs/test_redaction.txt 2>&1
 ```
+
+---
+
+## Task 4 — Metrics and Dashboard
+
+Task 4 implements application metrics using the Prometheus Python client.
+
+The implementation tracks three metrics:
+
+- `llm_requests_total` — total number of LLM requests
+- `llm_errors_total` — total number of failed LLM requests
+- `llm_request_duration_seconds` — histogram containing LLM request latency
+
+### Request Counter
+
+A Prometheus `Counter` is used to track the total number of model requests.
+
+```python
+REQUEST_COUNT.inc()
+```
+
+The request counter increases whenever an LLM request starts.
+
+### Error Counter
+
+A separate counter tracks failed model requests.
+
+```python
+except Exception:
+    ERROR_COUNT.inc()
+    raise
+```
+
+The error counter only increases when a model request fails.
+
+### Latency Histogram
+
+The execution time of each model request is measured using `time.perf_counter()`.
+
+```python
+start = time.perf_counter()
+```
+
+After the request completes, the duration is calculated and added to the Prometheus histogram.
+
+```python
+duration = time.perf_counter() - start
+LATENCY.observe(duration)
+```
+
+Latency is recorded inside the `finally` block so that it is measured for both successful and failed requests.
+
+### Metrics Endpoint
+
+Prometheus metrics are exposed using:
+
+```python
+start_http_server(8000)
+```
+
+This starts a metrics server on port `8000`.
+
+The metrics can be viewed or scraped from:
+
+```text
+http://localhost:8000/metrics
+```
+
+The application is kept running after the model request so that the metrics endpoint can be inspected.
+
+### Run Task 4
+
+```bash
+uv run python -m metrics_and_dashboard.metrics_and_dashboard
+```
+
+After the model request completes, the terminal displays the measured latency.
+
+### Automated Tests
+
+Task 4 includes automated tests for both successful and failed model requests.
+
+### Run Tests
+
+```bash
+uv run pytest tests/test_metrics_and_dashboard.py -v
+```
+
+### Evidence
+
+The Prometheus metrics scrape is saved in:
+
+```text
+outputs/metrics_and_dashboard.txt
+```
+
+The automated test evidence is saved in:
+
+```text
+outputs/test_metrics_and_dashboard.txt
+```
+
+The scrape output provides evidence that the request counter, error counter, and latency histogram are successfully exposed.

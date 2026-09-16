@@ -8,6 +8,7 @@ dependencies = [
     "langchain>=1.4.0",
     "langchain-openrouter>=0.2.8",
     "langsmith>=0.12.5",
+    "prometheus-client>=0.26.0",
     "pytest>=9.1.1",
     "python-dotenv>=1.2.3",
 ]
