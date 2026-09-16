@@ -360,3 +360,50 @@ outputs/test_alerting.txt
 ```
 
 The evidence demonstrates that a healthy request remains below the configured threshold and that an intentionally introduced latency regression successfully triggers the alert.
+
+---
+
+## Guardrails and Evidence
+
+The project includes shared guardrails to prevent uncontrolled execution and oversized inputs during the assessment.
+
+The main guardrail logic is stored in:
+
+```text
+guardrails.py
+```
+
+Evidence for the implemented guardrails is generated using:
+
+```text
+guardrails_evidence.py
+```
+
+This evidence file intentionally triggers the guardrails so their behaviour can be demonstrated and saved as part of the 
+
+### Shared Guardrail Design
+
+The guardrails are kept in a shared module rather than rewriting the same checks separately for every task.
+
+The implemented guardrail evidence demonstrates:
+
+* Hard step limit
+* Per-operation timeout
+* Capped retry attempts
+* Input/token budget enforcement
+
+### Run Guardrail Evidence
+
+```bash
+uv run python guardrails_evidence.py
+```
+
+### Save Guardrail Evidence
+
+```bash
+uv run python guardrails_evidence.py > outputs/guardrails_evidence_output.txt
+```
+
+The saved output provides reproducible evidence that each guardrail fires when its configured limit or failure condition is reached.
+
+---
